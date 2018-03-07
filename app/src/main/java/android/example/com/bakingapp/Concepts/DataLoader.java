@@ -19,10 +19,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import static android.example.com.bakingapp.recipeListActivity.setupRecyclerView;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -41,13 +44,13 @@ public class DataLoader {
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<Integer, Recipe> ITEM_MAP = new HashMap<Integer, Recipe>();
+    public static final Map<String, Recipe> ITEM_MAP = new HashMap<String, Recipe>();
 
     private static  int COUNT;
 
-    public static void load(final Context context) {
+    public static void load(final Context context) throws InterruptedException {
         if (!DataIsLoaded) {
-            new Thread(new Runnable() {
+            Thread thread=new Thread(new Runnable() {
                 private boolean verifyInternetConnection() {
 
                     ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -154,18 +157,26 @@ public class DataLoader {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                 }
 
 
-            }).start();
+            });
+
+            thread.start();
 
         }
+        else
+        {
+            setupRecyclerView();
+        }
+
     }
 
 
     private static void addRecipe(Recipe item) {
         ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+        ITEM_MAP.put(String.valueOf(item.id), item);
     }
 
     private static Recipe createRecipe(int position) {

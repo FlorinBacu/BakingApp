@@ -1,5 +1,6 @@
 package android.example.com.bakingapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ public class recipeListActivity extends AppCompatActivity {
      * device.
      */
     public static boolean mTwoPane;
+    private static RecyclerView recyclerView;
+    private static recipeListActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +67,22 @@ public class recipeListActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recipe_list);
         assert recyclerView != null;
+        recipeListActivity.recyclerView=recyclerView;
+        recipeListActivity.context=this;
 
-        recyclerView.setAdapter(new recipeListActivity.SimpleItemRecyclerViewAdapter(this, DataLoader.ITEMS, recipeListActivity.mTwoPane));
-        DataLoader.load(this);
+
+        try {
+            DataLoader.load(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        recipeListActivity.setupRecyclerView();
+
     }
 
-    public void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    public static void setupRecyclerView() {
+        recipeListActivity.recyclerView.setAdapter(new recipeListActivity.SimpleItemRecyclerViewAdapter(recipeListActivity.context, DataLoader.ITEMS, recipeListActivity.mTwoPane));
 
     }
 
@@ -94,7 +107,7 @@ public class recipeListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, recipeDetailActivity.class);
-                    intent.putExtra(recipeDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(recipeDetailFragment.ARG_ITEM_ID, String.valueOf(item.id));
 
                     context.startActivity(intent);
                 }

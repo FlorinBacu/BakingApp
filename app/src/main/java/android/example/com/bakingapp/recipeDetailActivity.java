@@ -1,6 +1,7 @@
 package android.example.com.bakingapp;
 
 import android.content.Intent;
+import android.example.com.bakingapp.dummy.DataLoader;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -62,6 +63,7 @@ public class recipeDetailActivity extends AppCompatActivity {
                     .add(R.id.recipe_detail_container, fragment)
                     .commit();
         }
+
     }
 
     @Override

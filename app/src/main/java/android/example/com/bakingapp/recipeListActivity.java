@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import android.example.com.bakingapp.dummy.DummyContent;
+import android.example.com.bakingapp.dummy.DataLoader;
 
 import java.util.List;
 
@@ -64,22 +64,23 @@ public class recipeListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+        DataLoader.load(this);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DataLoader.ITEMS, mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final recipeListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<DataLoader.RecipeItem> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                DataLoader.RecipeItem item = (DataLoader.RecipeItem) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putString(recipeDetailFragment.ARG_ITEM_ID, item.id);
@@ -99,7 +100,7 @@ public class recipeListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(recipeListActivity parent,
-                                      List<DummyContent.DummyItem> items,
+                                      List<DataLoader.RecipeItem> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;

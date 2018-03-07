@@ -1,4 +1,4 @@
-package android.example.com.bakingapp.dummy;
+package android.example.com.bakingapp.Concepts;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +28,12 @@ public class DataLoader {
      * An array of sample (dummy) items.
      */
     public static boolean DataIsLoaded=false;
-    public static final List<RecipeItem> ITEMS = new ArrayList<RecipeItem>();
+    public static final List<Recipe> ITEMS = new ArrayList<Recipe>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<String, RecipeItem> ITEM_MAP = new HashMap<String, RecipeItem>();
+    public static final Map<String, Recipe> ITEM_MAP = new HashMap<String, Recipe>();
 
     private static final int COUNT = 25;
 
@@ -100,13 +98,13 @@ public class DataLoader {
     }
 
 
-    private static void addRecipe(RecipeItem item) {
+    private static void addRecipe(Recipe item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
     }
 
-    private static RecipeItem createRecipeItem(int position) {
-        return new RecipeItem(String.valueOf(position), "Item " + position, makeDetails(position));
+    private static Recipe createRecipe(int position) {
+        return new Recipe(String.valueOf(position), "Item " + position, makeDetails(position));
     }
 
     private static String makeDetails(int position) {
@@ -121,20 +119,21 @@ public class DataLoader {
     /**
      * A dummy item representing a piece of content.
      */
-    public static class RecipeItem {
-        public final String id;
-        public final String content;
-        public final String details;
+    public static class Recipe {
+       public final int id;
+       public final String name;
+       public final List<Ingredient> ingredients;
+       public final List<Step> steps;
+       public final int servings;
+       public final String image;
 
-        public RecipeItem(String id, String content, String details) {
+        public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
             this.id = id;
-            this.content = content;
-            this.details = details;
-        }
-
-        @Override
-        public String toString() {
-            return content;
+            this.name = name;
+            this.ingredients = ingredients;
+            this.steps = steps;
+            this.servings = servings;
+            this.image = image;
         }
     }
 }

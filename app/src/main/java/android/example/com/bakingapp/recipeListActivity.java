@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import android.example.com.bakingapp.dummy.DataLoader;
+import android.example.com.bakingapp.Concepts.DataLoader;
 
 import java.util.List;
 
@@ -75,12 +75,12 @@ public class recipeListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final recipeListActivity mParentActivity;
-        private final List<DataLoader.RecipeItem> mValues;
+        private final List<DataLoader.Recipe> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataLoader.RecipeItem item = (DataLoader.RecipeItem) view.getTag();
+                DataLoader.Recipe item = (DataLoader.Recipe) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putString(recipeDetailFragment.ARG_ITEM_ID, item.id);
@@ -100,7 +100,7 @@ public class recipeListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(recipeListActivity parent,
-                                      List<DataLoader.RecipeItem> items,
+                                      List<DataLoader.Recipe> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;

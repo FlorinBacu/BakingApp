@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.example.com.bakingapp.dummy.DataLoader;
+import android.example.com.bakingapp.Concepts.DataLoader;
 
 /**
  * A fragment representing a single recipe detail screen.
@@ -26,7 +26,7 @@ public class recipeDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DataLoader.RecipeItem mItem;
+    private DataLoader.Recipe mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

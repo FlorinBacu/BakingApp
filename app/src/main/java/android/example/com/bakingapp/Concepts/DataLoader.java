@@ -5,6 +5,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -33,14 +37,14 @@ public class DataLoader {
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<String, Recipe> ITEM_MAP = new HashMap<String, Recipe>();
+    public static final Map<Integer, Recipe> ITEM_MAP = new HashMap<Integer, Recipe>();
 
-    private static final int COUNT = 25;
+    private static  int COUNT;
 
     public static void load(final Context context) {
         if (!DataIsLoaded) {
             new Thread(new Runnable() {
-                public boolean verifyInternetConnection() {
+                private boolean verifyInternetConnection() {
 
                     ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -49,9 +53,58 @@ public class DataLoader {
                             activeNetwork.isConnectedOrConnecting();
                     return isConnected;
                 }
+                private ArrayList<Ingredient> makeIngredientsList(JSONArray ingredientsArray) throws JSONException {
+                    int i;
+                    ArrayList<Ingredient> ingredients=new ArrayList<Ingredient>();
+                    for(i=0;i<ingredientsArray.length();i++)
+                    {
 
-                public void proccessJSON(String json) {
+                            ingredients.add(new Ingredient(ingredientsArray.getJSONObject(i).getInt("quantity"),
+                                    ingredientsArray.getJSONObject(i).getString("ingredient"),
+                                    ingredientsArray.getJSONObject(i).getString("measure")
+                                    ));
 
+                    }
+                    return ingredients;
+                }
+                private ArrayList<Step> makeStepList(JSONArray stepsArray) throws JSONException {
+                    ArrayList<Step> steps=new ArrayList<Step>();
+                    int i;
+                    for(i=0;i<stepsArray.length();i++)
+                    {
+
+                            steps.add(new Step(stepsArray.getJSONObject(i).getInt("id"),
+                                    stepsArray.getJSONObject(i).getString("shortDescription"),
+                                    stepsArray.getJSONObject(i).getString("description"),
+                                    stepsArray.getJSONObject(i).getString("videoURL"),
+                                    stepsArray.getJSONObject(i).getString("thumbnailURL")));
+
+                    }
+                    return steps;
+                }
+                private void proccessJSON(String json) throws JSONException {
+                    JSONArray recipesArray=new JSONArray(json);
+                    JSONObject recipeObject;
+                    DataLoader.COUNT=recipesArray.length();
+                    int i;
+                    int id;
+                    String name;
+                    ArrayList<Ingredient> ingredients;
+                    ArrayList<Step> steps;
+                    int servings;
+                    String image;
+                    for(i=0;i<DataLoader.COUNT;i++)
+                    {
+                        recipeObject=recipesArray.getJSONObject(i);
+                        id=recipeObject.getInt("id");
+                        name=recipeObject.getString("name");
+                        ingredients=makeIngredientsList(recipeObject.getJSONArray("ingredients"));
+                        steps=makeStepList(recipeObject.getJSONArray("steps"));
+                        servings=recipeObject.getInt("servings");
+                        image=recipeObject.getString("image");
+                        DataLoader.addRecipe(new Recipe(id,name,ingredients,steps,servings,image));
+
+                    }
                 }
 
                 @Override
@@ -88,7 +141,11 @@ public class DataLoader {
                         urlConnection.disconnect();
                     }
                     DataIsLoaded = (json != null);
-                    proccessJSON(json);
+                    try {
+                        proccessJSON(json);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
@@ -104,7 +161,8 @@ public class DataLoader {
     }
 
     private static Recipe createRecipe(int position) {
-        return new Recipe(String.valueOf(position), "Item " + position, makeDetails(position));
+       // return new Recipe(String.valueOf(position), "Item " + position, makeDetails(position));
+        return null;
     }
 
     private static String makeDetails(int position) {

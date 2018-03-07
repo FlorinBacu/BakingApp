@@ -83,7 +83,7 @@ public class recipeListActivity extends AppCompatActivity {
                 DataLoader.Recipe item = (DataLoader.Recipe) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(recipeDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putString(recipeDetailFragment.ARG_ITEM_ID, String.valueOf(item.id));
                     recipeDetailFragment fragment = new recipeDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -117,7 +117,7 @@ public class recipeListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mContentView.setText(mValues.get(position).name);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);

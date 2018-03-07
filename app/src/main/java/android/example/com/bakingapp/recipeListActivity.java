@@ -33,7 +33,7 @@ public class recipeListActivity extends AppCompatActivity {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    public static boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +61,16 @@ public class recipeListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.recipe_list);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recipe_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+
+        recyclerView.setAdapter(new recipeListActivity.SimpleItemRecyclerViewAdapter(this, DataLoader.ITEMS, recipeListActivity.mTwoPane));
         DataLoader.load(this);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DataLoader.ITEMS, mTwoPane));
+    public void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -99,7 +101,7 @@ public class recipeListActivity extends AppCompatActivity {
             }
         };
 
-        SimpleItemRecyclerViewAdapter(recipeListActivity parent,
+       public SimpleItemRecyclerViewAdapter(recipeListActivity parent,
                                       List<DataLoader.Recipe> items,
                                       boolean twoPane) {
             mValues = items;
@@ -116,7 +118,7 @@ public class recipeListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
+            holder.mIdView.setText(String.valueOf(mValues.get(position).id));
             holder.mContentView.setText(mValues.get(position).name);
 
             holder.itemView.setTag(mValues.get(position));

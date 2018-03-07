@@ -1,8 +1,12 @@
 package android.example.com.bakingapp.Concepts;
 
 import android.content.Context;
+import android.example.com.bakingapp.R;
+import android.example.com.bakingapp.recipeListActivity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -105,6 +109,10 @@ public class DataLoader {
                         DataLoader.addRecipe(new Recipe(id,name,ingredients,steps,servings,image));
 
                     }
+
+
+
+
                 }
 
                 @Override

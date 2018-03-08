@@ -43,12 +43,12 @@ import static android.content.ContentValues.TAG;
  * Created by florinel on 08.03.2018.
  */
 
-public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> implements ExoPlayer.EventListener{
+public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  {
     private final recipeDetailFragment mParentFragment;
     private final List<Step> mValues;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
-    SimpleExoPlayer mExoPlayer;
+
     public StepAdapter(recipeDetailFragment parentFragment,
                              List<Step> items
     ) {
@@ -75,19 +75,24 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SimpleExoPlayer mExoPlayer = initializePlayer(Uri.parse(mValues.get(position).videoUrl));
-        holder.video.setPlayer(mExoPlayer);
+        if(holder.mExoPlayer==null && !mValues.get(position).videoUrl.equals(""))
+        {
+            holder.mExoPlayer = initializePlayer(Uri.parse(mValues.get(position).videoUrl),holder);
+            holder.video.setPlayer( holder.mExoPlayer);
+            mMediaSession.setCallback(new mySessionCallback( holder.mExoPlayer));
+        }
+
         holder.shortDesc.setText(mValues.get(position).shortDescription);
         holder.desc.setText(mValues.get(position).description);
-        mMediaSession.setCallback(new mySessionCallback( mExoPlayer));
+
     }
 
     @Override
     public int getItemCount() {
         return mValues.size();
     }
-    private  SimpleExoPlayer initializePlayer(Uri mediaUri) {
-
+    private  SimpleExoPlayer initializePlayer(Uri mediaUri,ViewHolder vh) {
+        SimpleExoPlayer mExoPlayer;
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
@@ -95,7 +100,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
 
 
             // Set the ExoPlayer.EventListener to this activity.
-            mExoPlayer.addListener(this);
+            mExoPlayer.addListener(vh);
 
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(this.mParentFragment.getActivity(), "BakingApp");
@@ -106,45 +111,11 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
             return mExoPlayer;
     }
 
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
 
-    }
 
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                    mExoPlayer.getCurrentPosition(), 1f);
-        } else if((playbackState == ExoPlayer.STATE_READY)){
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    mExoPlayer.getCurrentPosition(), 1f);
-        }
-        mMediaSession.setPlaybackState(mStateBuilder.build());
-    }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-
-    }
-
-    @Override
-    public void onPositionDiscontinuity() {
-
-    }
-
-    public static class ViewHolder extends  RecyclerView.ViewHolder
+    public class ViewHolder extends  RecyclerView.ViewHolder implements ExoPlayer.EventListener
     {
+        SimpleExoPlayer mExoPlayer;
         final SimpleExoPlayerView video;
         final TextView shortDesc;
         final TextView desc;
@@ -154,6 +125,46 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
             shortDesc=(TextView)itemView.findViewById(R.id.shortdesc_step);
             desc=(TextView)itemView.findViewById(R.id.desc_step);
         }
+
+
+
+        @Override
+        public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+        }
+
+        @Override
+        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+        }
+
+        @Override
+        public void onLoadingChanged(boolean isLoading) {
+
+        }
+
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+                mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                        mExoPlayer.getCurrentPosition(), 1f);
+            } else if((playbackState == ExoPlayer.STATE_READY)){
+                mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                        mExoPlayer.getCurrentPosition(), 1f);
+            }
+            mMediaSession.setPlaybackState(mStateBuilder.build());
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+
+        }
+
+        @Override
+        public void onPositionDiscontinuity() {
+
+        }
+
     }
 
 }

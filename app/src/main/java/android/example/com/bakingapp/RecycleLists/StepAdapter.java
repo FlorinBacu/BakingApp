@@ -46,7 +46,7 @@ import static android.content.ContentValues.TAG;
 public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  {
     private final recipeDetailFragment mParentFragment;
     private final List<Step> mValues;
-    private MediaSessionCompat mMediaSession;
+    private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
     public StepAdapter(recipeDetailFragment parentFragment,
@@ -60,26 +60,29 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.step_list_content, parent, false);
-        mMediaSession=new MediaSessionCompat(mParentFragment.getActivity(),TAG);
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mMediaSession.setMediaButtonReceiver(null);
-        mStateBuilder = new PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY |
-                        PlaybackStateCompat.ACTION_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
-        mMediaSession.setPlaybackState(mStateBuilder.build());
+        if(mMediaSession==null) {
+            mMediaSession = new MediaSessionCompat(mParentFragment.getActivity(), TAG);
+            mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            mMediaSession.setMediaButtonReceiver(null);
+            mStateBuilder = new PlaybackStateCompat.Builder()
+                    .setActions(PlaybackStateCompat.ACTION_PLAY |
+                            PlaybackStateCompat.ACTION_PAUSE |
+                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+            mMediaSession.setPlaybackState(mStateBuilder.build());
 
-        mMediaSession.setActive(true);
+            mMediaSession.setActive(true);
+        }
         return new StepAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(holder.mExoPlayer==null && !mValues.get(position).videoUrl.equals(""))
+        if(holder.mExoPlayer==null && !mValues.get(position).videoUrl.equals("") )
         {
-            holder.mExoPlayer = initializePlayer(Uri.parse(mValues.get(position).videoUrl),holder);
+            initializePlayer(Uri.parse(mValues.get(position).videoUrl),holder);
             holder.video.setPlayer( holder.mExoPlayer);
-            mMediaSession.setCallback(new mySessionCallback( holder.mExoPlayer));
+            mMediaSession.setCallback(new mySessionCallback( holder.mExoPlayer ));
+
         }
 
         holder.shortDesc.setText(mValues.get(position).shortDescription);
@@ -91,31 +94,31 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  
     public int getItemCount() {
         return mValues.size();
     }
-    private  SimpleExoPlayer initializePlayer(Uri mediaUri,ViewHolder vh) {
-        SimpleExoPlayer mExoPlayer;
+    private void initializePlayer(Uri mediaUri,ViewHolder vh) {
+
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
-           mExoPlayer = ExoPlayerFactory.newSimpleInstance(this.mParentFragment.getActivity(), trackSelector, loadControl);
+        vh.mExoPlayer = ExoPlayerFactory.newSimpleInstance(this.mParentFragment.getActivity(), trackSelector, loadControl);
 
 
             // Set the ExoPlayer.EventListener to this activity.
-            mExoPlayer.addListener(vh);
+            vh.mExoPlayer.addListener(vh);
 
             // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(this.mParentFragment.getActivity(), "BakingApp");
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    this.mParentFragment.getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
-            return mExoPlayer;
+        String userAgent = Util.getUserAgent(this.mParentFragment.getActivity(), "BakingApp");
+        MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                this.mParentFragment.getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
+        vh.mExoPlayer.prepare(mediaSource);
+        vh.mExoPlayer.setPlayWhenReady(true);
+
     }
 
 
 
     public class ViewHolder extends  RecyclerView.ViewHolder implements ExoPlayer.EventListener
     {
-        SimpleExoPlayer mExoPlayer;
+        private SimpleExoPlayer mExoPlayer;
         final SimpleExoPlayerView video;
         final TextView shortDesc;
         final TextView desc;
@@ -124,6 +127,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  
             video=(SimpleExoPlayerView)itemView.findViewById(R.id.video_step);
             shortDesc=(TextView)itemView.findViewById(R.id.shortdesc_step);
             desc=(TextView)itemView.findViewById(R.id.desc_step);
+
         }
 
 
@@ -152,6 +156,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  
                 mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                         mExoPlayer.getCurrentPosition(), 1f);
             }
+
             mMediaSession.setPlaybackState(mStateBuilder.build());
         }
 

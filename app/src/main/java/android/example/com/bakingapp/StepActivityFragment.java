@@ -70,17 +70,18 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
     }
     @Override
     public void onDestroy() {
-        if (mMediaSession != null) {
+
             super.onDestroy();
             releasePlayer();
             mMediaSession.setActive(false);
-        }
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View inflated = inflater.inflate(R.layout.fragment_step, container, false);
+
             if(received)
             {
                 

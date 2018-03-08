@@ -8,9 +8,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
  * Created by florinel on 08.03.2018.
  */
 
-public class mySessionCallback extends MediaSessionCompat.Callback {
+public class MySessionCallback extends MediaSessionCompat.Callback {
     SimpleExoPlayer mExoPlayer;
-    public mySessionCallback(SimpleExoPlayer exoPlayer)
+    public MySessionCallback(SimpleExoPlayer exoPlayer)
     {
         mExoPlayer=exoPlayer;
     }

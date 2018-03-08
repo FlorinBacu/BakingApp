@@ -5,10 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/video_step"
-        android:layout_width="match_parent"
-        android:layout_height="214dp" />
+
 
     <TextView
         android:id="@+id/shortdesc_step"
@@ -17,14 +14,10 @@
         android:text="TextView"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/desc_step"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_step"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         app:srcCompat="@android:drawable/divider_horizontal_textfield" />

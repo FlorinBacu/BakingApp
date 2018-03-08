@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.example.com.bakingapp">
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,8 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver" >
+        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
@@ -36,6 +37,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.example.com.bakingapp.recipeListActivity" />
         </activity>
+        <activity
+            android:name=".StepActivity"
+            android:label="@string/title_activity_step"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

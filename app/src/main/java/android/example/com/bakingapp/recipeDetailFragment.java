@@ -1,14 +1,21 @@
 package android.example.com.bakingapp;
 
 import android.app.Activity;
+import android.example.com.bakingapp.RecycleLists.IngredientAdapter;
+import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.example.com.bakingapp.Concepts.DataLoader;
+
+import java.net.URI;
+import java.net.URL;
 
 /**
  * A fragment representing a single recipe detail screen.
@@ -27,6 +34,8 @@ public class recipeDetailFragment extends Fragment {
      * The dummy content this fragment is presenting.
      */
     private DataLoader.Recipe mItem;
+    private IngredientAdapter ingredientAdapter;
+    private RecyclerView recycleIngredient;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -61,6 +70,12 @@ public class recipeDetailFragment extends Fragment {
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(String.valueOf(mItem.servings));
+
+            ((ImageView)rootView.findViewById(R.id.recipe_image)).setImageURI(Uri.parse(mItem.image));
+            ingredientAdapter = new IngredientAdapter(this, mItem.ingredients);
+           recycleIngredient = (RecyclerView) rootView.findViewById(R.id.ingredient_list);
+            assert  recycleIngredient != null;
+            recycleIngredient.setAdapter(ingredientAdapter);
         }
 
         return rootView;

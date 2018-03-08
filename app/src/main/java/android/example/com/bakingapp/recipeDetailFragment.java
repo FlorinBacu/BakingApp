@@ -2,6 +2,7 @@ package android.example.com.bakingapp;
 
 import android.app.Activity;
 import android.example.com.bakingapp.RecycleLists.IngredientAdapter;
+import android.example.com.bakingapp.RecycleLists.StepAdapter;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class recipeDetailFragment extends Fragment {
     private DataLoader.Recipe mItem;
     private IngredientAdapter ingredientAdapter;
     private RecyclerView recycleIngredient;
+    private RecyclerView recycleStep;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -76,6 +78,9 @@ public class recipeDetailFragment extends Fragment {
            recycleIngredient = (RecyclerView) rootView.findViewById(R.id.ingredient_list);
             assert  recycleIngredient != null;
             recycleIngredient.setAdapter(ingredientAdapter);
+            recycleStep=(RecyclerView)rootView.findViewById(R.id.step_list);
+            assert recycleStep!=null;
+            recycleStep.setAdapter(new StepAdapter(this,mItem.steps));
         }
 
         return rootView;

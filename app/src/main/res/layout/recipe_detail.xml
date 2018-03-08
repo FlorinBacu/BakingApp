@@ -19,6 +19,16 @@
         tools:context="android.example.com.bakingapp.recipeListActivity"
         tools:listitem="@layout/ingredient_list_content"
         />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/step_list"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="android.example.com.bakingapp.recipeListActivity"
+        tools:listitem="@layout/step_list_content"
+        />
 
 
     <TextView

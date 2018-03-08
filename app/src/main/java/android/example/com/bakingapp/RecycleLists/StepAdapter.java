@@ -48,7 +48,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
     private final List<Step> mValues;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
-
+    SimpleExoPlayer mExoPlayer;
     public StepAdapter(recipeDetailFragment parentFragment,
                              List<Step> items
     ) {
@@ -91,7 +91,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
-            SimpleExoPlayer mExoPlayer = ExoPlayerFactory.newSimpleInstance(this.mParentFragment.getActivity(), trackSelector, loadControl);
+           mExoPlayer = ExoPlayerFactory.newSimpleInstance(this.mParentFragment.getActivity(), trackSelector, loadControl);
 
 
             // Set the ExoPlayer.EventListener to this activity.
@@ -123,7 +123,14 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder> i
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
+        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                    mExoPlayer.getCurrentPosition(), 1f);
+        } else if((playbackState == ExoPlayer.STATE_READY)){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                    mExoPlayer.getCurrentPosition(), 1f);
+        }
+        mMediaSession.setPlaybackState(mStateBuilder.build());
     }
 
     @Override

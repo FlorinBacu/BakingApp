@@ -20,6 +20,7 @@ package android.example.com.bakingapp;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ import static org.hamcrest.Matchers.anything;
 @RunWith(AndroidJUnit4.class)
 public class RecipeActivityScreenTest {
 
-    public static final String RECIPE_NAME = "Nutella Pie";
+    public static final String RECIPE_NAME = "test";
 
     /**
      * The ActivityTestRule is a rule provided by Android used for functional testing of a single
@@ -57,6 +58,11 @@ public class RecipeActivityScreenTest {
     @Rule
     public ActivityTestRule<RecipeListActivity> mActivityTestRule = new ActivityTestRule<>(RecipeListActivity.class);
 
+    @Before
+    public void setToTest()
+    {
+        mActivityTestRule.getActivity().onTestData=true;
+    }
     /**
      * Clicks on a GridView item and checks it opens up the OrderActivity with the correct details.
      */

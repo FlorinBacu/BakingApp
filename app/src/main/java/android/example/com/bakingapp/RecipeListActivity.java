@@ -2,6 +2,8 @@ package android.example.com.bakingapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.example.com.bakingapp.Concepts.Ingredient;
+import android.example.com.bakingapp.Concepts.Step;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import android.example.com.bakingapp.Concepts.DataLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +38,11 @@ public class RecipeListActivity extends AppCompatActivity {
     public static boolean mTwoPane;
     private static RecyclerView recyclerView;
     private static RecipeListActivity context;
+    public boolean onTestData=false;
+    public void addRecipeTest()
+    {
+        DataLoader.ITEMS.add(new DataLoader.Recipe(0,"test",new ArrayList<Ingredient>(),new ArrayList<Step>(),0,""));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,13 +68,17 @@ public class RecipeListActivity extends AppCompatActivity {
         RecipeListActivity.recyclerView=recyclerView;
         RecipeListActivity.context=this;
 
-
-        try {
-            DataLoader.load(this);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+if(!onTestData) {
+    try {
+        DataLoader.load(this);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+}
+else
+{
+    addRecipeTest();
+}
         RecipeListActivity.setupRecyclerView();
 
     }

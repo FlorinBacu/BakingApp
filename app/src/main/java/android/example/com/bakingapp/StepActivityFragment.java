@@ -62,7 +62,7 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
             videoURL=args.getString("videoURL");
             /*currentRecipe=args.getInt("currentRecipeIndex");
             currentStep=args.getInt("currentStepIndex");*/
-           
+
 
         }
 

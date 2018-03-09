@@ -35,7 +35,6 @@ public class RecipeListActivity extends AppCompatActivity {
     public static boolean mTwoPane;
     private static RecyclerView recyclerView;
     private static RecipeListActivity context;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +44,7 @@ public class RecipeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
         if (findViewById(R.id.recipe_detail_container) != null) {
             // The detail container view will be present only in the

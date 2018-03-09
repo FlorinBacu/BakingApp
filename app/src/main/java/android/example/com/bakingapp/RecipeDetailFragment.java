@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.example.com.bakingapp.RecycleLists.IngredientAdapter;
 import android.example.com.bakingapp.RecycleLists.StepAdapter;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,20 +12,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.example.com.bakingapp.Concepts.DataLoader;
 
-import java.net.URI;
-import java.net.URL;
-
 /**
  * A fragment representing a single recipe detail screen.
- * This fragment is either contained in a {@link recipeListActivity}
- * in two-pane mode (on tablets) or a {@link recipeDetailActivity}
+ * This fragment is either contained in a {@link RecipeListActivity}
+ * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
  * on handsets.
  */
-public class recipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -38,12 +37,12 @@ public class recipeDetailFragment extends Fragment {
     private IngredientAdapter ingredientAdapter;
     private RecyclerView recycleIngredient;
     private RecyclerView recycleStep;
-
+    public static int currentRecipeIndex;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public recipeDetailFragment() {
+    public RecipeDetailFragment() {
     }
 
     @Override
@@ -71,7 +70,20 @@ public class recipeDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(String.valueOf(mItem.servings));
+            ((Button)rootView.findViewById(R.id.next_recipe_button)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                            Bundle arguments = new Bundle();
+                          currentRecipeIndex=(currentRecipeIndex+1)%DataLoader.ITEMS.size();
+                            arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, String.valueOf(DataLoader.ITEMS.get(currentRecipeIndex).id));
+                            RecipeDetailFragment fragment = new RecipeDetailFragment();
+                            fragment.setArguments(arguments);
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.recipe_detail_container,fragment).commit();
+
+
+                }
+            });
 
             ((ImageView)rootView.findViewById(R.id.recipe_image)).setImageURI(Uri.parse(mItem.image));
             ingredientAdapter = new IngredientAdapter(this, mItem.ingredients);

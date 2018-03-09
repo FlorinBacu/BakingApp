@@ -25,7 +25,7 @@ public class StepActivity extends AppCompatActivity {
         StepActivityFragment stepActivityFragment=new StepActivityFragment();
         stepActivityFragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_step,stepActivityFragment)
+                .add(R.id.fragment_step,stepActivityFragment)
                 .commit();
 
 

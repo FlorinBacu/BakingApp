@@ -1,14 +1,9 @@
 package android.example.com.bakingapp.Concepts;
 
 import android.content.Context;
-import android.example.com.bakingapp.R;
-import android.example.com.bakingapp.recipeListActivity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,13 +15,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import static android.example.com.bakingapp.recipeListActivity.setupRecyclerView;
+import static android.example.com.bakingapp.RecipeListActivity.setupRecyclerView;
 
 /**
  * Helper class for providing sample content for user interfaces created by

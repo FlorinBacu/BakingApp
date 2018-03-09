@@ -7,13 +7,20 @@
     android:orientation="vertical"
     tools:context="android.example.com.bakingapp.StepActivityFragment"
     tools:showIn="@layout/activity_step">
+
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/video_step"
         android:layout_width="match_parent"
-        android:layout_height="214dp" />
+        android:layout_height="300dp" />
     <TextView
         android:id="@+id/desc_step"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/next_step_button"
+        android:text="Next step" />
 </LinearLayout>

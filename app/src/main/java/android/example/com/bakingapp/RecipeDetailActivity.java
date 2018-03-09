@@ -2,10 +2,7 @@ package android.example.com.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
@@ -15,9 +12,9 @@ import android.view.MenuItem;
  * An activity representing a single recipe detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link recipeListActivity}.
+ * in a {@link RecipeListActivity}.
  */
-public class recipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +40,18 @@ public class recipeDetailActivity extends AppCompatActivity {
         //
         // http://developer.android.com/guide/components/fragments.html
         //
-        if (savedInstanceState == null) {
+
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(recipeDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(recipeDetailFragment.ARG_ITEM_ID));
-            recipeDetailFragment fragment = new recipeDetailFragment();
+            arguments.putString(RecipeDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
+            RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_detail_container, fragment)
+                    .replace(R.id.recipe_detail_container, fragment)
                     .commit();
-        }
+
 
     }
 
@@ -69,7 +66,7 @@ public class recipeDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, recipeListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, RecipeListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,10 +1,8 @@
 package android.example.com.bakingapp.RecycleLists;
 
-import android.example.com.bakingapp.Concepts.DataLoader;
 import android.example.com.bakingapp.Concepts.Ingredient;
 import android.example.com.bakingapp.R;
-import android.example.com.bakingapp.recipeDetailFragment;
-import android.example.com.bakingapp.recipeListActivity;
+import android.example.com.bakingapp.RecipeDetailFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +16,9 @@ import java.util.List;
  */
 
 public class IngredientAdapter  extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
-    private final recipeDetailFragment mParentFragment;
+    private final RecipeDetailFragment mParentFragment;
     private final List<Ingredient> mValues;
-    public IngredientAdapter(recipeDetailFragment parentFragment,
+    public IngredientAdapter(RecipeDetailFragment parentFragment,
                                          List<Ingredient> items
                                          ) {
         mValues = items;

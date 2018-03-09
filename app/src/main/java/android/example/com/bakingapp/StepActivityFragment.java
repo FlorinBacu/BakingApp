@@ -1,6 +1,8 @@
 package android.example.com.bakingapp;
 
+import android.example.com.bakingapp.Concepts.DataLoader;
 import android.example.com.bakingapp.Concepts.MySessionCallback;
+import android.example.com.bakingapp.Concepts.Step;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -46,6 +49,10 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
     private TextView descView;
     private String descText;
     private String videoURL;
+    private Button nextButton;
+
+    public static int currentStepIndex;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +60,9 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
         if(args!=null && args.getBoolean("sent")) {
             descText=args.getString("desc");
             videoURL=args.getString("videoURL");
-            received=true;
+            /*currentRecipe=args.getInt("currentRecipeIndex");
+            currentStep=args.getInt("currentStepIndex");*/
+           
 
         }
 
@@ -82,20 +91,36 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
 
         View inflated = inflater.inflate(R.layout.fragment_step, container, false);
 
-            if(received)
-            {
+
                 
 
 
                 mPlayerView = (SimpleExoPlayerView)inflated.findViewById(R.id.video_step);
                 descView = (TextView) inflated.findViewById(R.id.desc_step);
+                nextButton=(Button)inflated.findViewById(R.id.next_step_button);
+                nextButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        StepActivityFragment.currentStepIndex= (StepActivityFragment.currentStepIndex+1)% DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.size();
+                        Bundle arguments = new Bundle();
+                        Step step = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.get(StepActivityFragment.currentStepIndex);
+                        arguments.putString("videoURL",step.videoUrl);
+                        arguments.putString("desc",step.description);
+                        arguments.putBoolean("sent",true);
+                        StepActivityFragment stepActivityFragment=new StepActivityFragment();
+                        stepActivityFragment.setArguments(arguments);
+                       getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_step,stepActivityFragment)
+                                .commit();
+                    }
+                });
                 initializeMediaSession();
 
 
                 mPlayerView.setPlayer(mExoPlayer);
                 descView.setText(descText);
                 initializePlayer(Uri.parse(videoURL));
-            }
+
 
 
 

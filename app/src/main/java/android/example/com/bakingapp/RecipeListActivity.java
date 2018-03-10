@@ -61,6 +61,8 @@ public class RecipeListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+        else
+            mTwoPane=false;
 
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recipe_list);

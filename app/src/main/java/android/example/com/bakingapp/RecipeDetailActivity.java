@@ -24,7 +24,13 @@ public class RecipeDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
+        if (findViewById(R.id.step_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            RecipeListActivity.mTwoPane = true;
+        }
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

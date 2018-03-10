@@ -5,20 +5,19 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.example.com.bakingapp.Concepts.DataLoader;
 import android.widget.RemoteViews;
 
 /**
  * Implementation of App Widget functionality.
  */
-public class RecipeListWidget extends AppWidgetProvider {
+public class RecipeDetailWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
+
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_list_widget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_detail_widget);
 Intent intent=new Intent(context,RecipeListActivity.class);
         PendingIntent pendingIntent=PendingIntent.getActivity(context,0,intent,0);
         views.setOnClickPendingIntent(R.id.go_back_widget,pendingIntent);

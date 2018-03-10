@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.example.com.bakingapp.RecycleLists.IngredientAdapter;
 import android.example.com.bakingapp.RecycleLists.StepAdapter;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 import android.example.com.bakingapp.Concepts.DataLoader;
 
 /**
@@ -66,12 +64,12 @@ public class RecipeDetailFragment extends Fragment {
             }
             AppWidgetManager appWidgetManager=AppWidgetManager.getInstance(getActivity());
 
-            int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(getActivity(),RecipeListWidget.class));
-           // RecipeListWidget.updateAppWidgets(getActivity(),appWidgetManager,widgetsIds,mItem.name,mItem.toString());
-            RemoteViews remoteView=new RemoteViews(getActivity().getPackageName(), R.layout.recipe_list_widget);
+            int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(getActivity(),RecipeDetailWidget.class));
+           // RecipeDetailWidget.updateAppWidgets(getActivity(),appWidgetManager,widgetsIds,mItem.name,mItem.toString());
+            RemoteViews remoteView=new RemoteViews(getActivity().getPackageName(), R.layout.recipe_detail_widget);
             remoteView.setTextViewText(R.id.recipe_widget_title,mItem.name);
                         remoteView.setTextViewText(R.id.steps_widget,mItem.toString());
-            RecipeListWidget.updateAppWidgets(activity,appWidgetManager,widgetsIds);
+            RecipeDetailWidget.updateAppWidgets(activity,appWidgetManager,widgetsIds);
             appWidgetManager.updateAppWidget(widgetsIds,remoteView);
         }
     }

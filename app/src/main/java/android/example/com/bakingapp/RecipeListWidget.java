@@ -27,7 +27,7 @@ Intent intent=new Intent(context,RecipeListActivity.class);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
-    static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds,String recipeTitle,String recipeDesc)
+    static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
     {
 
         for (int appWidgetId : appWidgetIds) {

@@ -18,4 +18,9 @@ public class Step {
         this.videoUrl = videoUrl;
         this.thumbnailURL = thumbnailURL;
     }
+
+    @Override
+    public String toString() {
+        return shortDescription;
+    }
 }

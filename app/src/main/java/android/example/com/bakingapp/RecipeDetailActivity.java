@@ -64,13 +64,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     .commit();
         String id=String.valueOf(getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
 
-   AppWidgetManager appWidgetManager=AppWidgetManager.getInstance(this);
-   int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(this,RecipeListWidget.class));
-   RecipeListWidget.updateAppWidgets(this,appWidgetManager,widgetsIds,DataLoader.ITEM_MAP.get(id).name,DataLoader.ITEM_MAP.get(id).toString());
-        RemoteViews remoteView=new RemoteViews(this.getPackageName(), R.layout.recipe_list_widget);
-        remoteView.setTextViewText(R.id.recipe_widget_title,DataLoader.ITEM_MAP.get(id).name);
-        remoteView.setTextViewText(R.id.desc_widget,DataLoader.ITEM_MAP.get(id).toString());
-        appWidgetManager.updateAppWidget(widgetsIds,remoteView);
+
 
 
 

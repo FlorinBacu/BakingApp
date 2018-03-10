@@ -214,7 +214,7 @@ public class DataLoader {
 
         @Override
         public String toString() {
-            return "Ingredients\n"+ingredients.toString()+"\nSteps:\n"+steps.toString();
+            return steps.toString().substring(1,steps.toString().length()-1);
         }
     }
 }

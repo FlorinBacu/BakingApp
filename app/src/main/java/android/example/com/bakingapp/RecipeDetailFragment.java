@@ -1,6 +1,8 @@
 package android.example.com.bakingapp;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.example.com.bakingapp.RecycleLists.IngredientAdapter;
 import android.example.com.bakingapp.RecycleLists.StepAdapter;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.example.com.bakingapp.Concepts.DataLoader;
 
@@ -61,6 +64,15 @@ public class RecipeDetailFragment extends Fragment {
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mItem.name);
             }
+            AppWidgetManager appWidgetManager=AppWidgetManager.getInstance(getActivity());
+
+            int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(getActivity(),RecipeListWidget.class));
+           // RecipeListWidget.updateAppWidgets(getActivity(),appWidgetManager,widgetsIds,mItem.name,mItem.toString());
+            RemoteViews remoteView=new RemoteViews(getActivity().getPackageName(), R.layout.recipe_list_widget);
+            remoteView.setTextViewText(R.id.recipe_widget_title,mItem.name);
+                        remoteView.setTextViewText(R.id.steps_widget,mItem.toString());
+            RecipeListWidget.updateAppWidgets(activity,appWidgetManager,widgetsIds);
+            appWidgetManager.updateAppWidget(widgetsIds,remoteView);
         }
     }
 
@@ -94,6 +106,7 @@ public class RecipeDetailFragment extends Fragment {
             recycleStep=(RecyclerView)rootView.findViewById(R.id.step_list);
             assert recycleStep!=null;
             recycleStep.setAdapter(new StepAdapter(this,mItem.steps));
+
         }
 
         return rootView;

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/go_back_widget"
     android:orientation="vertical"
+    android:background="#3400ffee"
     android:padding="@dimen/widget_margin"
     >
 

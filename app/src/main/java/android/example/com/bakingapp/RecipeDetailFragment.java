@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.example.com.bakingapp.Concepts.DataLoader;
 
+import timber.log.Timber;
+
 /**
  * A fragment representing a single recipe detail screen.
  * This fragment is either contained in a {@link RecipeListActivity}
@@ -56,7 +58,7 @@ public class RecipeDetailFragment extends Fragment {
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem = DataLoader.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-
+            Timber.d("Recipe name I got "+mItem.name)
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {

@@ -33,6 +33,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import timber.log.Timber;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -60,6 +62,8 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
         if(args!=null && args.getBoolean("sent")) {
             descText=args.getString("desc");
             videoURL=args.getString("videoURL");
+            Timber.d("Step description is ");
+            Timber.d(descText);
             /*currentRecipe=args.getInt("currentRecipeIndex");
             currentStep=args.getInt("currentStepIndex");*/
 

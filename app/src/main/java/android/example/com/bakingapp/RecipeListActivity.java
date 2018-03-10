@@ -24,6 +24,8 @@ import android.example.com.bakingapp.Concepts.DataLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * An activity representing a list of recipes. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -123,6 +125,7 @@ else
             public void onClick(View view) {
                 DataLoader.Recipe item = (DataLoader.Recipe) view.getTag();
                 RecipeDetailFragment.currentRecipeIndex=DataLoader.ITEMS.indexOf(item);
+                Timber.d("go to detail for recipe  "+item.name);
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, String.valueOf(item.id));

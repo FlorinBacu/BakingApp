@@ -13,6 +13,8 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.RemoteViews;
 
+import timber.log.Timber;
+
 /**
  * An activity representing a single recipe detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -54,6 +56,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+        Timber.d("send recipe to fragment detail "+DataLoader.ITEM_MAP.get(RecipeDetailFragment.ARG_ITEM_ID).name)
+
             Bundle arguments = new Bundle();
             arguments.putString(RecipeDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));

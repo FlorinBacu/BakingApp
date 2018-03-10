@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import timber.log.Timber;
+
 public class StepActivity extends AppCompatActivity {
 
     @Override
@@ -17,7 +19,8 @@ public class StepActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
-
+        Timber.d("I got the step description:");
+        Timber.d(intent.getStringExtra("desc"));
         Bundle arguments = new Bundle();
         arguments.putString("videoURL",intent.getStringExtra("videoURL"));
         arguments.putString("desc",intent.getStringExtra("desc"));

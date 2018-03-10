@@ -202,7 +202,7 @@ public class DataLoader {
        public final List<Step> steps;
        public final int servings;
        public final String image;
-
+       public static boolean show_name;
         public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
             this.id = id;
             this.name = name;
@@ -214,7 +214,16 @@ public class DataLoader {
 
         @Override
         public String toString() {
-            return ingredients.toString().substring(1,ingredients.toString().length()-1);
+
+            if(show_name)
+            {
+                return name+"\n";
+            }
+            else
+            {
+                return ingredients.toString().substring(1,ingredients.toString().length()-1);
+            }
+
         }
     }
 }

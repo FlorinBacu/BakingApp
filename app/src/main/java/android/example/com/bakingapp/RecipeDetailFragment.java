@@ -63,7 +63,7 @@ public class RecipeDetailFragment extends Fragment {
                 appBarLayout.setTitle(mItem.name);
             }
             AppWidgetManager appWidgetManager=AppWidgetManager.getInstance(getActivity());
-
+            DataLoader.Recipe.show_name=false;
             int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(getActivity(),RecipeDetailWidget.class));
            // RecipeDetailWidget.updateAppWidgets(getActivity(),appWidgetManager,widgetsIds,mItem.name,mItem.toString());
             RemoteViews remoteView=new RemoteViews(getActivity().getPackageName(), R.layout.recipe_detail_widget);

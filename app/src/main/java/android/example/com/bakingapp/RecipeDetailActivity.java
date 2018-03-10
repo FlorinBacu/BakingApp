@@ -62,9 +62,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.recipe_detail_container, fragment)
                     .commit();
-        String id=String.valueOf(getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
-
-
 
 
 

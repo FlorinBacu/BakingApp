@@ -93,12 +93,22 @@ else
 {
     addRecipeTest();
 }
-        RecipeListActivity.setupRecyclerView();
+        //RecipeListActivity.setupRecyclerView();
 
     }
 
     public static void setupRecyclerView() {
         RecipeListActivity.recyclerView.setAdapter(new RecipeListActivity.SimpleItemRecyclerViewAdapter(RecipeListActivity.context, DataLoader.ITEMS, RecipeListActivity.mTwoPane));
+        AppWidgetManager appWidgetManager=AppWidgetManager.getInstance(context);
+
+        int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(context,HomeWidget.class));
+        // RecipeDetailWidget.updateAppWidgets(getActivity(),appWidgetManager,widgetsIds,mItem.name,mItem.toString());
+        RemoteViews remoteView=new RemoteViews(context.getPackageName(), R.layout.home_widget);
+        DataLoader.Recipe.show_name=true;
+        remoteView.setTextViewText(R.id.list_recipes_widget,"Recipe list:\n"+DataLoader.ITEMS.toString().substring(1,DataLoader.ITEMS.toString().length()-1).replace(",",""));
+        RecipeDetailWidget.updateAppWidgets(context,appWidgetManager,widgetsIds);
+
+        appWidgetManager.updateAppWidget(widgetsIds,remoteView);
 
     }
 

@@ -68,7 +68,7 @@ public class RecipeDetailFragment extends Fragment {
            // RecipeDetailWidget.updateAppWidgets(getActivity(),appWidgetManager,widgetsIds,mItem.name,mItem.toString());
             RemoteViews remoteView=new RemoteViews(getActivity().getPackageName(), R.layout.recipe_detail_widget);
             remoteView.setTextViewText(R.id.recipe_widget_title,mItem.name);
-                        remoteView.setTextViewText(R.id.steps_widget,mItem.toString());
+                        remoteView.setTextViewText(R.id.ingredients_widget,mItem.toString());
             RecipeDetailWidget.updateAppWidgets(activity,appWidgetManager,widgetsIds);
             appWidgetManager.updateAppWidget(widgetsIds,remoteView);
         }

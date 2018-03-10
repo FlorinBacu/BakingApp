@@ -211,5 +211,10 @@ public class DataLoader {
             this.servings = servings;
             this.image = image;
         }
+
+        @Override
+        public String toString() {
+            return "Ingredients\n"+ingredients.toString()+"\nSteps:\n"+steps.toString();
+        }
     }
 }

@@ -1,12 +1,17 @@
 package android.example.com.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.example.com.bakingapp.Concepts.DataLoader;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.RemoteViews;
 
 /**
  * An activity representing a single recipe detail screen. This
@@ -57,9 +62,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.recipe_detail_container, fragment)
                     .commit();
+        String id=String.valueOf(getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
+
+   AppWidgetManager appWidgetManager=AppWidgetManager.getInstance(this);
+   int[] widgetsIds=appWidgetManager.getAppWidgetIds(new ComponentName(this,RecipeListWidget.class));
+   RecipeListWidget.updateAppWidgets(this,appWidgetManager,widgetsIds,DataLoader.ITEM_MAP.get(id).name,DataLoader.ITEM_MAP.get(id).toString());
+        RemoteViews remoteView=new RemoteViews(this.getPackageName(), R.layout.recipe_list_widget);
+        remoteView.setTextViewText(R.id.recipe_widget_title,DataLoader.ITEM_MAP.get(id).name);
+        remoteView.setTextViewText(R.id.desc_widget,DataLoader.ITEM_MAP.get(id).toString());
+        appWidgetManager.updateAppWidget(widgetsIds,remoteView);
 
 
-    }
+
+        }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

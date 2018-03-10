@@ -1,5 +1,7 @@
 package android.example.com.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.example.com.bakingapp.Concepts.Ingredient;
@@ -13,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 
@@ -52,7 +55,16 @@ public class RecipeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
+/*
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeListActivity.class));
+        //Trigger data update to handle the GridView widgets and force a data
 
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.layout.recipe_list_widget);
+
+        //Now update all widgets
+
+*/
 
         if (findViewById(R.id.recipe_detail_container) != null) {
             // The detail container view will be present only in the

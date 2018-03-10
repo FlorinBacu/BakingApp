@@ -104,14 +104,25 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
                         StepActivityFragment.currentStepIndex= (StepActivityFragment.currentStepIndex+1)% DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.size();
                         Bundle arguments = new Bundle();
                         Step step = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.get(StepActivityFragment.currentStepIndex);
+
                         arguments.putString("videoURL",step.videoUrl);
                         arguments.putString("desc",step.description);
                         arguments.putBoolean("sent",true);
                         StepActivityFragment stepActivityFragment=new StepActivityFragment();
                         stepActivityFragment.setArguments(arguments);
-                       getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_step,stepActivityFragment)
-                                .commit();
+                        if(RecipeListActivity.mTwoPane)
+                        {
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.step_detail_container,stepActivityFragment)
+                                    .commit();
+                        }
+                        else
+                        {
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_step,stepActivityFragment)
+                                    .commit();
+                        }
+
                     }
                 });
                 initializeMediaSession();

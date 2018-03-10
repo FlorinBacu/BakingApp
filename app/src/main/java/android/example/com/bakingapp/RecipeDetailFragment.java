@@ -33,6 +33,7 @@ public class RecipeDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
+
     private DataLoader.Recipe mItem;
     private IngredientAdapter ingredientAdapter;
     private RecyclerView recycleIngredient;

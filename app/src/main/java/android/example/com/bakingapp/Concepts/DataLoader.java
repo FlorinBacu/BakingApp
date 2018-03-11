@@ -173,7 +173,7 @@ public class DataLoader {
     }
 
 
-    private static void addRecipe(Recipe item) {
+    public static void addRecipe(Recipe item) {
         ITEMS.add(item);
         ITEM_MAP.put(String.valueOf(item.id), item);
     }

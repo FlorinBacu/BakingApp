@@ -58,7 +58,7 @@ public class RecipeDetailFragment extends Fragment {
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem = DataLoader.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-            Timber.d("Recipe name I got "+mItem.name)
+            Timber.d("Recipe name I got "+mItem.name);
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {

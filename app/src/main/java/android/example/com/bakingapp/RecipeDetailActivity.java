@@ -56,7 +56,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-        Timber.d("send recipe to fragment detail "+DataLoader.ITEM_MAP.get(RecipeDetailFragment.ARG_ITEM_ID).name)
+        Timber.d("send recipe to fragment detail "+ getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
 
             Bundle arguments = new Bundle();
             arguments.putString(RecipeDetailFragment.ARG_ITEM_ID,

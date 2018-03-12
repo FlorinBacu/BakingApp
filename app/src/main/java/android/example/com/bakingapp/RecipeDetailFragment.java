@@ -3,6 +3,7 @@ package android.example.com.bakingapp;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
+import android.example.com.bakingapp.Concepts.Ingredient;
 import android.example.com.bakingapp.RecycleLists.IngredientAdapter;
 import android.example.com.bakingapp.RecycleLists.StepAdapter;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.example.com.bakingapp.Concepts.DataLoader;
+import android.widget.TextView;
 
 import timber.log.Timber;
 
@@ -80,8 +82,17 @@ public class RecipeDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
-        if(rootView.findViewById(R.id.step_detail_container)!=null)
-            RecipeListActivity.mTwoPane=true;
+        if(rootView.findViewById(R.id.step_detail_container)!=null) {
+            RecipeListActivity.mTwoPane = true;
+            ((TextView)rootView.findViewById(R.id.show_ingredients)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   IngredientFragment fragment = new IngredientFragment();
+
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.step_detail_container,fragment).commit();
+                }
+            });
+        }
         else
             RecipeListActivity.mTwoPane=false;
         // Show the dummy content as text in a TextView.

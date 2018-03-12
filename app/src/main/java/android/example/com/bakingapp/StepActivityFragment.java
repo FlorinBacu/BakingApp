@@ -75,17 +75,38 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
 
     public StepActivityFragment() {
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState!=null)
+          mExoPlayer.seekTo(savedInstanceState.getLong("posPlayer",0));
+
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putLong("posPlayer",mExoPlayer.getCurrentPosition());
+    }
+
     private void releasePlayer() {
 
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
     @Override
     public void onDestroy() {
 
             super.onDestroy();
-            releasePlayer();
             mMediaSession.setActive(false);
 
     }

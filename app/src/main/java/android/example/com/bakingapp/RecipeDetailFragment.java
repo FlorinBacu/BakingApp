@@ -106,6 +106,10 @@ public class RecipeDetailFragment extends Fragment {
             recycleStep=(RecyclerView)rootView.findViewById(R.id.step_list);
             assert recycleStep!=null;
             recycleStep.setAdapter(new StepAdapter(this,mItem.steps));
+            if(rootView.findViewById(R.id.step_detail_container)!=null)
+                RecipeListActivity.mTwoPane=true;
+            else
+                RecipeListActivity.mTwoPane=true;
 
         }
 

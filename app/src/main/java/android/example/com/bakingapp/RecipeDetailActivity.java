@@ -38,6 +38,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             RecipeListActivity.mTwoPane = true;
         }
+        else
+        {
+            RecipeListActivity.mTwoPane = false;
+        }
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

@@ -76,36 +76,28 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.ViewHolder>  
                     // activity should be in two-pane mode.
                     Step step = (Step) view.getTag();
                     StepActivityFragment.currentStepIndex = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.indexOf(step);
-                    Bundle arguments = new Bundle();
-                    arguments.putBoolean("sent",true);
-                    arguments.putString("desc",step.description);
-                    arguments.putString("videoURL",step.videoUrl);
-                    StepActivityFragment fragment = new StepActivityFragment();
-                    fragment.setArguments(arguments);
-                    if(RecipeListActivity.mTwoPane)
-                    {
+                        Bundle arguments = new Bundle();
+                        arguments.putBoolean("sent",true);
+                        arguments.putString("desc",step.description);
+                        arguments.putString("videoURL",step.videoUrl);
+                        StepActivityFragment fragment = new StepActivityFragment();
+                        fragment.setArguments(arguments);
                         mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.step_detail_container, fragment)
                                 .commit();
-                    }
 
-                                else {
-                        mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_step, fragment)
-                                .commit();
-                    }
                 }
                 else {
                     Step step = (Step) view.getTag();
                     StepActivityFragment.currentStepIndex = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.indexOf(step);
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, StepActivity.class);
 
-                    intent.putExtra("videoURL", step.videoUrl);
-                    intent.putExtra("desc", step.description);
-                   /* intent.putExtra("currentRecipeIndex",)
-                intent.putExtra("currentStepIndex",)*/
-                    context.startActivity(intent);
+                    Intent intent = new Intent(mParentFragment.getContext(), StepActivity.class);
+                    intent.putExtra("sent",true);
+                    intent.putExtra("desc",step.description);
+                    intent.putExtra("videoURL",step.videoUrl);
+                    mParentFragment.getContext().startActivity(intent);
+
                 }
 
             }

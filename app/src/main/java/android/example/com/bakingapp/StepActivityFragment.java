@@ -138,7 +138,7 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
                         if(RecipeListActivity.mTwoPane)
                         {
                             getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.step_detail_container,stepActivityFragment)
+                                    .replace(R.id.fragment_step,stepActivityFragment)
                                     .commit();
                         }
                         else

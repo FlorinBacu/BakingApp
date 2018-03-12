@@ -80,7 +80,10 @@ public class RecipeDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
-
+        if(rootView.findViewById(R.id.step_detail_container)!=null)
+            RecipeListActivity.mTwoPane=true;
+        else
+            RecipeListActivity.mTwoPane=false;
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
             ((Button)rootView.findViewById(R.id.next_recipe_button)).setOnClickListener(new View.OnClickListener() {
@@ -106,10 +109,7 @@ public class RecipeDetailFragment extends Fragment {
             recycleStep=(RecyclerView)rootView.findViewById(R.id.step_list);
             assert recycleStep!=null;
             recycleStep.setAdapter(new StepAdapter(this,mItem.steps));
-            if(rootView.findViewById(R.id.step_detail_container)!=null)
-                RecipeListActivity.mTwoPane=true;
-            else
-                RecipeListActivity.mTwoPane=true;
+
 
         }
 

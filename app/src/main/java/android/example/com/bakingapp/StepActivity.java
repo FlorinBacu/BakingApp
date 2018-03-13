@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
@@ -31,7 +32,6 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
-
 import timber.log.Timber;
 
 public class StepActivity extends AppCompatActivity {
@@ -45,7 +45,7 @@ public class StepActivity extends AppCompatActivity {
     private BandwidthMeter bandwidthMeter;
     private TextView descView;
     private Button nextButton;
-    private long seekPosition=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,21 +89,10 @@ public class StepActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-
-        outState.putLong("playerPos",player.getCurrentPosition()%player.getDuration());
-        super.onSaveInstanceState(outState, outPersistentState);
-    }
 
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
-        if(savedInstanceState!=null)
-            seekPosition=savedInstanceState.getLong("playerPos",0);
-        super.onRestoreInstanceState(savedInstanceState);
-    }
+
 
     private void initializePlayer() {
 
@@ -129,7 +118,7 @@ public class StepActivity extends AppCompatActivity {
                 mediaDataSourceFactory, extractorsFactory, null, null);
 
         player.prepare(mediaSource);
-        player.seekTo(seekPosition);
+
 
     }
 

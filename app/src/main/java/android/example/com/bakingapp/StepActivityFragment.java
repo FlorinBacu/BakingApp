@@ -133,7 +133,7 @@ Timber.d("OncreateFragment");
 
 
                             getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_step,stepActivityFragment)
+                                    .replace(R.id.step_detail_container,stepActivityFragment)
                                     .commit();
 
 
@@ -149,7 +149,7 @@ Timber.d("OncreateFragment");
     }
     private void initializePlayer() {
 
-        simpleExoPlayerView =(SimpleExoPlayerView)getActivity().findViewById(R.id.video_step);
+
         simpleExoPlayerView.requestFocus();
 
         TrackSelection.Factory videoTrackSelectionFactory =

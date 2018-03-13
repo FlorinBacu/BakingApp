@@ -45,6 +45,7 @@ public class StepActivity extends AppCompatActivity {
     private BandwidthMeter bandwidthMeter;
     private TextView descView;
     private Button nextButton;
+    private String videoURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class StepActivity extends AppCompatActivity {
 
 
         descView = (TextView) findViewById(R.id.desc_step);
-
+        videoURL=intent.getStringExtra("videoURL");
         nextButton=(Button)findViewById(R.id.next_step_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,12 +76,10 @@ public class StepActivity extends AppCompatActivity {
                 Bundle arguments = new Bundle();
                 Step step = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.get(StepActivityFragment.currentStepIndex);
                 Context context = v.getContext();
-                Intent intent = new Intent(context, RecipeDetailActivity.class);
-                intent.putExtra("videoURL",step.videoUrl);
-                intent.putExtra("desc",step.description);
-                intent.putExtra("sent",true);
-               startActivity(intent);
-
+                descView.setText(step.description);
+                videoURL=step.videoUrl;
+                releasePlayer();
+               initializePlayer();
 
 
 
@@ -114,7 +113,7 @@ public class StepActivity extends AppCompatActivity {
 
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
-        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(getIntent().getStringExtra("videoURL")),
+        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse( videoURL),
                 mediaDataSourceFactory, extractorsFactory, null, null);
 
         player.prepare(mediaSource);

@@ -1,5 +1,6 @@
 package android.example.com.bakingapp;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.example.com.bakingapp.Concepts.DataLoader;
@@ -35,131 +36,33 @@ import com.google.android.exoplayer2.util.Util;
 import timber.log.Timber;
 
 public class StepActivity extends AppCompatActivity {
-    private SimpleExoPlayerView simpleExoPlayerView;
-    private SimpleExoPlayer player;
 
-    private Timeline.Window window;
-    private DataSource.Factory mediaDataSourceFactory;
-    private DefaultTrackSelector trackSelector;
-    private boolean shouldAutoPlay;
-    private BandwidthMeter bandwidthMeter;
-    private TextView descView;
-    private Button nextButton;
-    private String videoURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_step);
+        setContentView(R.layout.content_step);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         Timber.d("I got the step description:");
         Timber.d(intent.getStringExtra("desc"));
-        descView=findViewById(R.id.desc_step);
-        descView.setText(intent.getStringExtra("desc"));
-        simpleExoPlayerView= (SimpleExoPlayerView)findViewById(R.id.video_step);
-        shouldAutoPlay = true;
-        bandwidthMeter = new DefaultBandwidthMeter();
-        mediaDataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "BakingApp"), (TransferListener<? super DataSource>) bandwidthMeter);
-        window = new Timeline.Window();
-
-
-
-        descView = (TextView) findViewById(R.id.desc_step);
-        videoURL=intent.getStringExtra("videoURL");
-        nextButton=(Button)findViewById(R.id.next_step_button);
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StepActivityFragment.currentStepIndex= (StepActivityFragment.currentStepIndex+1)% DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.size();
-                Bundle arguments = new Bundle();
-                Step step = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.get(StepActivityFragment.currentStepIndex);
-                Context context = v.getContext();
-                descView.setText(step.description);
-                videoURL=step.videoUrl;
-                releasePlayer();
-               initializePlayer();
-
-
-
-            }
-        });
-
-    }
-
-
-
-
-
-
-    private void initializePlayer() {
-
-
-        simpleExoPlayerView.requestFocus();
-
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(bandwidthMeter);
-
-        trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
-
-        simpleExoPlayerView.setPlayer(player);
-
-        player.setPlayWhenReady(shouldAutoPlay);
-/*        MediaSource mediaSource = new HlsMediaSource(Uri.parse("https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"),
-                mediaDataSourceFactory, mainHandler, null);*/
-
-        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
-        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse( videoURL),
-                mediaDataSourceFactory, extractorsFactory, null, null);
-
-        player.prepare(mediaSource);
+        StepActivityFragment stepActivityFragment=new StepActivityFragment();
+        Bundle arg=new Bundle();
+        arg.putString("videoURL",intent.getStringExtra("videoURL"));
+        arg.putString("desc",intent.getStringExtra("desc"));
+        arg.putBoolean("sent",true);
+        StepActivityFragment stepActivityFragment1=new StepActivityFragment();
+        stepActivityFragment.setArguments(arg);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_step,   stepActivityFragment)
+                .commit();
 
 
     }
 
-    private void releasePlayer() {
-        if (player != null) {
-            shouldAutoPlay = player.getPlayWhenReady();
-            player.release();
-            player = null;
-            trackSelector = null;
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if ((Util.SDK_INT <= 23 || player == null)) {
-            initializePlayer();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
-    }
 
 }
+
+
+

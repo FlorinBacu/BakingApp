@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="android.example.com.bakingapp.StepActivityFragment"
-    tools:showIn="@layout/activity_step">
+    >
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/video_step"

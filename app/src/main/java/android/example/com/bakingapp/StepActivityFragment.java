@@ -1,5 +1,6 @@
 package android.example.com.bakingapp;
 
+import android.annotation.SuppressLint;
 import android.example.com.bakingapp.Concepts.DataLoader;
 import android.example.com.bakingapp.Concepts.MySessionCallback;
 import android.example.com.bakingapp.Concepts.Step;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -37,6 +40,7 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 
@@ -49,46 +53,26 @@ import static android.content.ContentValues.TAG;
  */
 public class StepActivityFragment extends Fragment{
 
-    private SimpleExoPlayerView simpleExoPlayerView;
     private SimpleExoPlayer player;
-    private Timeline.Window window;
-    private DataSource.Factory mediaDataSourceFactory;
-    private DefaultTrackSelector trackSelector;
-    private boolean shouldAutoPlay;
-    private BandwidthMeter bandwidthMeter;
+    private SimpleExoPlayerView playerView;
+
+    private long playbackPosition;
+    private int currentWindow;
+    private boolean playWhenReady = true;
+    private int currentWindowState;
+    private long playbackPositionState;
 
     private TextView descView;
     private String descText;
     private String videoURL;
     private Button nextButton;
-    boolean isPlaying=false;
+
     public static int currentStepIndex;
     public static long positionSeek=0;
 
     public StepActivityFragment() {
     }
 
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("isPlaying",true);
-        outState.putLong("pos",positionSeek);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState!=null) {
-            isPlaying = savedInstanceState.getBoolean("isPlaying", false);
-            positionSeek=savedInstanceState.getLong("pos",0);
-
-        }
-        else
-        {
-            positionSeek=0;
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,12 +90,8 @@ Timber.d("OncreateFragment");
             currentStep=args.getInt("currentStepIndex");*/
 
 
+            playerView = inflated.findViewById(R.id.video_step);
 
-            simpleExoPlayerView= (SimpleExoPlayerView)inflated.findViewById(R.id.video_step);
-        shouldAutoPlay = true;
-        bandwidthMeter = new DefaultBandwidthMeter();
-        mediaDataSourceFactory = new DefaultDataSourceFactory(this.getActivity(), Util.getUserAgent(this.getActivity(), "BakingApp"), (TransferListener<? super DataSource>) bandwidthMeter);
-        window = new Timeline.Window();
 
 
 
@@ -140,6 +120,15 @@ Timber.d("OncreateFragment");
                     }
                 });
 
+            Log.i("TAG","restore");
+
+            if (savedInstanceState != null) {
+                Log.i("TAG","restore inside");
+                currentWindow = savedInstanceState.getInt("winIndex");
+                playbackPosition = savedInstanceState.getLong("position",0);
+                initializePlayer();
+
+            }
 
         }
 
@@ -147,42 +136,6 @@ Timber.d("OncreateFragment");
         return inflated;
 
     }
-    private void initializePlayer() {
-
-
-        simpleExoPlayerView.requestFocus();
-
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(bandwidthMeter);
-
-        trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-
-        player = ExoPlayerFactory.newSimpleInstance(this.getActivity(), trackSelector);
-
-        simpleExoPlayerView.setPlayer(player);
-
-        player.setPlayWhenReady(shouldAutoPlay);
-
-
-    DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
-    MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),
-            mediaDataSourceFactory, extractorsFactory, null, null);
-
-    player.prepare(mediaSource);
-        player.seekTo(positionSeek);
-}
-
-    private void releasePlayer() {
-        if (player != null) {
-            positionSeek=player.getCurrentPosition()%player.getDuration();
-            shouldAutoPlay = player.getPlayWhenReady();
-            player.release();
-            player = null;
-            trackSelector = null;
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -194,27 +147,78 @@ Timber.d("OncreateFragment");
     @Override
     public void onResume() {
         super.onResume();
+        hideSystemUi();
         if ((Util.SDK_INT <= 23 || player == null)) {
-           initializePlayer();
+            initializePlayer();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
         if (Util.SDK_INT <= 23) {
-           releasePlayer();
+            releasePlayer();
         }
     }
 
     @Override
     public void onStop() {
-       super.onStop();
-
+        super.onStop();
         if (Util.SDK_INT > 23) {
-          releasePlayer();
+            releasePlayer();
         }
-     }
+    }
+
+    private void initializePlayer() {
+        if (player == null) {
+            player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getActivity()),
+                    new DefaultTrackSelector(), new DefaultLoadControl());
+            playerView.setPlayer(player);
+            player.setPlayWhenReady(playWhenReady);
+            player.seekTo(currentWindow, playbackPosition);
+        }
+        MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
+        player.prepare(mediaSource, false, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.i("TAG","save");
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("winIndex", currentWindowState);
+        outState.putLong("position", playbackPositionState);
+
+    }
+
+
+
+    private void releasePlayer() {
+        if (player != null) {
+
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playbackPositionState=playbackPosition;
+            currentWindowState=currentWindow;
+            playWhenReady = player.getPlayWhenReady();
+            player.release();
+            player = null;
+        }
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        return new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab"))
+                .createMediaSource(uri);
+    }
+
+    @SuppressLint("InlinedApi")
+    private void hideSystemUi() {
+        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
 
 }

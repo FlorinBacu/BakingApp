@@ -46,7 +46,10 @@ public class RecipeListActivity extends AppCompatActivity {
     public boolean onTestData=false;
     public void addRecipeTest()
     {
-        DataLoader.ITEMS.add(new DataLoader.Recipe(0,"test",new ArrayList<Ingredient>(),new ArrayList<Step>(),0,""));
+        ArrayList<Step> steps=new ArrayList<Step>();
+        steps.add(new Step(0,"step name","long description","videoUrl","thumbURL"));
+        DataLoader.Recipe recipe=new DataLoader.Recipe(0,"test",new ArrayList<Ingredient>(),steps,0,"");
+DataLoader.addRecipe(recipe);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +97,9 @@ if(!onTestData) {
 else
 {
     addRecipeTest();
+    RecipeListActivity.setupRecyclerView();
 }
-        //RecipeListActivity.setupRecyclerView();
+
 
     }
 

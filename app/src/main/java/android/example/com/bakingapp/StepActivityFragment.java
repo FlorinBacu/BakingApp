@@ -93,7 +93,7 @@ public class StepActivityFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+Timber.d("OncreateFragment");
         View inflated = inflater.inflate(R.layout.fragment_step, container, false);
 
         Bundle args = getArguments();
@@ -110,7 +110,7 @@ public class StepActivityFragment extends Fragment{
             simpleExoPlayerView= (SimpleExoPlayerView)inflated.findViewById(R.id.video_step);
         shouldAutoPlay = true;
         bandwidthMeter = new DefaultBandwidthMeter();
-        mediaDataSourceFactory = new DefaultDataSourceFactory(this.getActivity(), Util.getUserAgent(this.getActivity(), "mediaPlayerSample"), (TransferListener<? super DataSource>) bandwidthMeter);
+        mediaDataSourceFactory = new DefaultDataSourceFactory(this.getActivity(), Util.getUserAgent(this.getActivity(), "BakingApp"), (TransferListener<? super DataSource>) bandwidthMeter);
         window = new Timeline.Window();
 
 

@@ -126,6 +126,8 @@ public class DataLoader {
                         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
                         isConnected = activeNetwork != null &&
                                 activeNetwork.isConnectedOrConnecting();
+                        DataLoader.ITEM_MAP.clear();
+                        DataLoader.ITEMS.clear();
 
                     }
 
@@ -159,6 +161,7 @@ public class DataLoader {
                         return json;
                     }
                 }.execute(new URL("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json"));
+
             }
             catch (MalformedURLException mue)
             {

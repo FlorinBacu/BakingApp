@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -26,11 +27,17 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 
 import timber.log.Timber;
@@ -40,26 +47,57 @@ import static android.content.ContentValues.TAG;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class StepActivityFragment extends Fragment implements ExoPlayer.EventListener {
+public class StepActivityFragment extends Fragment{
 
-    private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
-    private MediaSessionCompat mMediaSession;
-    private PlaybackStateCompat.Builder mStateBuilder;
-    boolean received=false;
+    private SimpleExoPlayerView simpleExoPlayerView;
+    private SimpleExoPlayer player;
+    private Timeline.Window window;
+    private DataSource.Factory mediaDataSourceFactory;
+    private DefaultTrackSelector trackSelector;
+    private boolean shouldAutoPlay;
+    private BandwidthMeter bandwidthMeter;
 
     private TextView descView;
     private String descText;
     private String videoURL;
     private Button nextButton;
-
+    boolean isPlaying=false;
     public static int currentStepIndex;
+    public static long positionSeek=0;
+
+    public StepActivityFragment() {
+    }
+
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isPlaying",true);
+        outState.putLong("pos",positionSeek);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState!=null) {
+            isPlaying = savedInstanceState.getBoolean("isPlaying", false);
+            positionSeek=savedInstanceState.getLong("pos",0);
+
+        }
+        else
+        {
+            positionSeek=0;
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View inflated = inflater.inflate(R.layout.fragment_step, container, false);
+
         Bundle args = getArguments();
-        if(args!=null && args.getBoolean("sent")) {
+        if(args.getBoolean("sent")) {
             descText=args.getString("desc");
             videoURL=args.getString("videoURL");
             Timber.d("Step description is ");
@@ -68,60 +106,17 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
             currentStep=args.getInt("currentStepIndex");*/
 
 
-        }
+
+            simpleExoPlayerView= (SimpleExoPlayerView)inflated.findViewById(R.id.video_step);
+        shouldAutoPlay = true;
+        bandwidthMeter = new DefaultBandwidthMeter();
+        mediaDataSourceFactory = new DefaultDataSourceFactory(this.getActivity(), Util.getUserAgent(this.getActivity(), "mediaPlayerSample"), (TransferListener<? super DataSource>) bandwidthMeter);
+        window = new Timeline.Window();
 
 
-    }
 
-    public StepActivityFragment() {
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState!=null)
-          mExoPlayer.seekTo(savedInstanceState.getLong("posPlayer",0));
-
-    }
-
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-
-        savedInstanceState.putLong("posPlayer",mExoPlayer.getCurrentPosition());
-    }
-
-    private void releasePlayer() {
-
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        releasePlayer();
-    }
-
-    @Override
-    public void onDestroy() {
-
-            super.onDestroy();
-            mMediaSession.setActive(false);
-
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View inflated = inflater.inflate(R.layout.fragment_step, container, false);
-
-
-                
-
-
-                mPlayerView = (SimpleExoPlayerView)inflated.findViewById(R.id.video_step);
                 descView = (TextView) inflated.findViewById(R.id.desc_step);
+                descView.setText(descText);
                 nextButton=(Button)inflated.findViewById(R.id.next_step_button);
                 nextButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -135,119 +130,91 @@ public class StepActivityFragment extends Fragment implements ExoPlayer.EventLis
                         arguments.putBoolean("sent",true);
                         StepActivityFragment stepActivityFragment=new StepActivityFragment();
                         stepActivityFragment.setArguments(arguments);
-                        if(RecipeListActivity.mTwoPane)
-                        {
+
+
                             getActivity().getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.fragment_step,stepActivityFragment)
                                     .commit();
-                        }
-                        else
-                        {
-                            getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_step,stepActivityFragment)
-                                    .commit();
-                        }
+
 
                     }
                 });
-                initializeMediaSession();
 
 
-                mPlayerView.setPlayer(mExoPlayer);
-                descView.setText(descText);
-                initializePlayer(Uri.parse(videoURL));
-
-
+        }
 
 
         return inflated;
 
     }
-    private void initializePlayer(Uri mediaUri) {
-        if (mExoPlayer == null) {
-            // Create an instance of the ExoPlayer.
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(this.getActivity(), trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
+    private void initializePlayer() {
 
-            // Set the ExoPlayer.EventListener to this activity.
-            mExoPlayer.addListener(this);
+        simpleExoPlayerView =(SimpleExoPlayerView)getActivity().findViewById(R.id.video_step);
+        simpleExoPlayerView.requestFocus();
 
-            // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(this.getActivity(), "BakingApp");
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    this.getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory(bandwidthMeter);
+
+        trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
+        player = ExoPlayerFactory.newSimpleInstance(this.getActivity(), trackSelector);
+
+        simpleExoPlayerView.setPlayer(player);
+
+        player.setPlayWhenReady(shouldAutoPlay);
+
+
+    DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+
+    MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),
+            mediaDataSourceFactory, extractorsFactory, null, null);
+
+    player.prepare(mediaSource);
+        player.seekTo(positionSeek);
+}
+
+    private void releasePlayer() {
+        if (player != null) {
+            positionSeek=player.getCurrentPosition()%player.getDuration();
+            shouldAutoPlay = player.getPlayWhenReady();
+            player.release();
+            player = null;
+            trackSelector = null;
         }
     }
-    private void initializeMediaSession() {
-
-        // Create a MediaSessionCompat.
-        mMediaSession = new MediaSessionCompat(this.getActivity(), TAG);
-
-        // Enable callbacks from MediaButtons and TransportControls.
-        mMediaSession.setFlags(
-                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
-        // Do not let MediaButtons restart the player when the app is not visible.
-        mMediaSession.setMediaButtonReceiver(null);
-
-        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
-        mStateBuilder = new PlaybackStateCompat.Builder()
-                .setActions(
-                        PlaybackStateCompat.ACTION_PLAY |
-                                PlaybackStateCompat.ACTION_PAUSE |
-                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                                PlaybackStateCompat.ACTION_PLAY_PAUSE);
-
-        mMediaSession.setPlaybackState(mStateBuilder.build());
-
-
-        // MySessionCallback has methods that handle callbacks from a media controller.
-        mMediaSession.setCallback(new MySessionCallback(mExoPlayer));
-
-        // Start the Media Session since the activity is active.
-        mMediaSession.setActive(true);
-
-    }
 
     @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                    mExoPlayer.getCurrentPosition(), 1f);
-        } else if((playbackState == ExoPlayer.STATE_READY)){
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    mExoPlayer.getCurrentPosition(), 1f);
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initializePlayer();
         }
-        mMediaSession.setPlaybackState(mStateBuilder.build());
     }
 
     @Override
-    public void onPlayerError(ExoPlaybackException error) {
-
+    public void onResume() {
+        super.onResume();
+        if ((Util.SDK_INT <= 23 || player == null)) {
+           initializePlayer();
+        }
     }
 
     @Override
-    public void onPositionDiscontinuity() {
+    public void onPause() {
+        super.onPause();
 
+        if (Util.SDK_INT <= 23) {
+           releasePlayer();
+        }
     }
+
+    @Override
+    public void onStop() {
+       super.onStop();
+
+        if (Util.SDK_INT > 23) {
+          releasePlayer();
+        }
+     }
+
 }

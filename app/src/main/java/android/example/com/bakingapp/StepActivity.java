@@ -162,7 +162,7 @@ initializePlayer();
             player.seekTo(currentWindow, playbackPosition);
         }
         MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
-        player.prepare(mediaSource, true, false);
+        player.prepare(mediaSource, false, false);
     }
 
     @Override

@@ -56,8 +56,8 @@ public class StepActivityFragment extends Fragment{
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
 
-    private long playbackPosition;
-    private int currentWindow;
+    private  long playbackPosition;
+    private  int currentWindow;
     private boolean playWhenReady = true;
     private int currentWindowState;
     private long playbackPositionState;
@@ -121,12 +121,12 @@ Timber.d("OncreateFragment");
                 });
 
             Log.i("TAG","restore");
-
             if (savedInstanceState != null) {
                 Log.i("TAG","restore inside");
                 currentWindow = savedInstanceState.getInt("winIndex");
                 playbackPosition = savedInstanceState.getLong("position",0);
-                initializePlayer();
+
+initializePlayer();
 
             }
 
@@ -178,7 +178,7 @@ Timber.d("OncreateFragment");
             player.seekTo(currentWindow, playbackPosition);
         }
         MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
-        player.prepare(mediaSource, false, false);
+        player.prepare(mediaSource, true, false);
     }
 
     @Override
@@ -207,7 +207,7 @@ Timber.d("OncreateFragment");
     }
 
     private MediaSource buildMediaSource(Uri uri) {
-        return new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab"))
+        return new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("bakingapp"))
                 .createMediaSource(uri);
     }
 

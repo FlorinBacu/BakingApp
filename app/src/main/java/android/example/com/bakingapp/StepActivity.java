@@ -48,8 +48,7 @@ public class StepActivity extends AppCompatActivity {
     private  long playbackPosition;
     private  int currentWindow;
     private boolean playWhenReady = true;
-    private int currentWindowState;
-    private long playbackPositionState;
+
     private TextView descView;
     private String descText;
     private String videoURL;
@@ -104,8 +103,6 @@ context=this;
                 Log.i("TAG","restore inside");
                 currentWindow = savedInstanceState.getInt("winIndex");
                 playbackPosition = savedInstanceState.getLong("position",0);
-
-initializePlayer();
 
             }
         }
@@ -170,8 +167,8 @@ initializePlayer();
         Log.i("TAG","save");
         super.onSaveInstanceState(outState);
 
-        outState.putInt("winIndex", currentWindowState);
-        outState.putLong("position", playbackPositionState);
+        outState.putInt("winIndex", currentWindow);
+        outState.putLong("position", playbackPosition);
 
     }
 
@@ -182,8 +179,8 @@ initializePlayer();
 
             playbackPosition = player.getCurrentPosition();
             currentWindow = player.getCurrentWindowIndex();
-            playbackPositionState=playbackPosition;
-            currentWindowState=currentWindow;
+
+
             playWhenReady = player.getPlayWhenReady();
             player.release();
             player = null;

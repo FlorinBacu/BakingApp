@@ -4,17 +4,25 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.example.com.bakingapp.Concepts.DetailAdapter;
+import android.example.com.bakingapp.Concepts.IdleResource;
 import android.example.com.bakingapp.Concepts.Ingredient;
 import android.example.com.bakingapp.Concepts.Step;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
@@ -34,12 +42,14 @@ import timber.log.Timber;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity implements DataLoader.DelayerCallback{
 
+    private static final String EXTRA_RECIPE_NAME ="com.example.android.bakingapp.EXTRA_RECIPE_NAME" ;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+    Intent mRecipeIntent;
     public static boolean mTwoPane;
     private static RecyclerView recyclerView;
     private static RecipeListActivity context;
@@ -50,6 +60,18 @@ public class RecipeListActivity extends AppCompatActivity {
         steps.add(new Step(0,"step name","long description","videoUrl","thumbURL"));
         DataLoader.Recipe recipe=new DataLoader.Recipe(0,"test",new ArrayList<Ingredient>(),steps,0,"");
 DataLoader.addRecipe(recipe);
+    }
+    @Nullable
+    private IdleResource mIdlingResource;
+
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new IdleResource();
+        }
+        return mIdlingResource;
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +111,8 @@ DataLoader.addRecipe(recipe);
 
 if(!onTestData) {
     try {
-        DataLoader.load(this);
+        getIdlingResource();
+        DataLoader.load(this,this,mIdlingResource);
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
@@ -115,6 +138,46 @@ else
         RecipeDetailWidget.updateAppWidgets(context,appWidgetManager,widgetsIds);
 
         appWidgetManager.updateAppWidget(widgetsIds,remoteView);
+
+    }
+
+    @Override
+    public void onDone(ArrayList<DataLoader.Recipe> recipes) {
+        //TextView testing =(TextView)findViewById(R.id.textView);
+        //testing.setText("Changed");
+/*
+        // Create a {@link TeaAdapter}, whose data source is a list of {@link Tea}s.
+        // The adapter know how to create grid items for each item in the list.
+        RecyclerView gridview = (RecyclerView) findViewById(R.id.recipe_list);
+        DetailAdapter adapter = new DetailAdapter(this, R.layout.recipe_detail, (ArrayList< DataLoader.Recipe>)DataLoader.ITEMS);
+        gridview.setAdapter(adapter);
+
+        // Set a click listener on that View
+        RecyclerView.OnItemTouchListener oitl=new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+                DataLoader.Recipe item = (DataLoader.Recipe)rv. .getItemAtPosition(position);
+                // Set the intent to open the {@link OrderActivity}
+                mRecipeIntent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
+                String recipeName = item.name;
+                mRecipeIntent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, String.valueOf(item.id));
+                startActivity(mRecipeIntent);
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        };
+        gridview.addOnItemTouchListener(oitl);
+
+              */
+
 
     }
 

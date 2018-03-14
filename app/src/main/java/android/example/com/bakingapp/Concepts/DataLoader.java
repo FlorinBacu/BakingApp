@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,9 @@ public class DataLoader {
      */
     public static boolean DataIsLoaded=false;
     public static final List<Recipe> ITEMS = new ArrayList<Recipe>();
-
+    public interface DelayerCallback{
+        void onDone(ArrayList<DataLoader.Recipe> recipes);
+    }
     /**
      * A map of sample (dummy) items, by ID.
      */
@@ -43,10 +46,11 @@ public class DataLoader {
 
     private static  int COUNT;
 
-    public static void load(final Context context) throws InterruptedException {
+    public static void load(final Context context, final DelayerCallback callback,final IdleResource ir) throws InterruptedException {
         if (!DataIsLoaded) {
             try {
                 new AsyncTask<URL, Integer, String>() {
+                    public static final long DELAY_MILLIS =3000 ;
                     boolean isConnected;
 
                     private ArrayList<Ingredient> makeIngredientsList(JSONArray ingredientsArray) throws JSONException {
@@ -116,6 +120,18 @@ public class DataLoader {
 
                         }
                         setupRecyclerView();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (callback != null) {
+                                    callback.onDone((ArrayList<Recipe>)DataLoader.ITEMS);
+                                    if (ir != null) {
+                                        ir.setIdleState(true);
+                                    }
+                                }
+                            }
+                        }, DELAY_MILLIS);
                     }
 
 
@@ -128,7 +144,9 @@ public class DataLoader {
                                 activeNetwork.isConnectedOrConnecting();
                         DataLoader.ITEM_MAP.clear();
                         DataLoader.ITEMS.clear();
-
+                        if (ir != null) {
+                            ir.setIdleState(false);
+                        }
                     }
 
                     @Override

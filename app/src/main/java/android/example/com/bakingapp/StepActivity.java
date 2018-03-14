@@ -54,6 +54,7 @@ public class StepActivity extends AppCompatActivity {
     private String descText;
     private String videoURL;
     private Button nextButton;
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +65,7 @@ public class StepActivity extends AppCompatActivity {
         Timber.d("I got the step description:");
         Timber.d(intent.getStringExtra("desc"));
 
-
+context=this;
         if(intent.getBooleanExtra("sent",false)) {
             descText=intent.getStringExtra("desc");
             videoURL=intent.getStringExtra("videoURL");
@@ -88,17 +89,11 @@ public class StepActivity extends AppCompatActivity {
                     StepActivityFragment.currentStepIndex= (StepActivityFragment.currentStepIndex+1)% DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.size();
                     Bundle arguments = new Bundle();
                     Step step = DataLoader.ITEMS.get(RecipeDetailFragment.currentRecipeIndex).steps.get(StepActivityFragment.currentStepIndex);
-
-                    arguments.putString("videoURL",step.videoUrl);
-                    arguments.putString("desc",step.description);
-                    arguments.putBoolean("sent",true);
-                    StepActivityFragment stepActivityFragment=new StepActivityFragment();
-                    stepActivityFragment.setArguments(arguments);
-
-
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_step,stepActivityFragment)
-                            .commit();
+                    Intent intent1=new Intent(context,StepActivity.class);
+                    intent1.putExtra("videoURL",step.videoUrl);
+                    intent1.putExtra("desc",step.description);
+                    intent1.putExtra("sent",true);
+                    startActivity(intent1);
 
 
                 }

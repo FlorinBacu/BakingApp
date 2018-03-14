@@ -58,7 +58,7 @@ public class StepActivityFragment extends Fragment{
 
     private  long playbackPosition;
     private  int currentWindow;
-    private boolean playWhenReady = true;
+    private boolean playWhenReady = false;
     private int currentWindowState;
     private long playbackPositionState;
 
@@ -120,15 +120,6 @@ Timber.d("OncreateFragment");
                     }
                 });
 
-            Log.i("TAG","restore");
-            if (savedInstanceState != null) {
-                Log.i("TAG","restore inside");
-                currentWindow = savedInstanceState.getInt("winIndex");
-                playbackPosition = savedInstanceState.getLong("position",0);
-
-initializePlayer();
-
-            }
 
         }
 
@@ -147,7 +138,7 @@ initializePlayer();
     @Override
     public void onResume() {
         super.onResume();
-        hideSystemUi();
+        //hideSystemUi();
         if ((Util.SDK_INT <= 23 || player == null)) {
             initializePlayer();
         }
@@ -175,19 +166,9 @@ initializePlayer();
                     new DefaultTrackSelector(), new DefaultLoadControl());
             playerView.setPlayer(player);
             player.setPlayWhenReady(playWhenReady);
-            player.seekTo(currentWindow, playbackPosition);
+            MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
+            player.prepare(mediaSource, true, false);
         }
-        MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
-        player.prepare(mediaSource, true, false);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.i("TAG","save");
-        super.onSaveInstanceState(outState);
-
-        outState.putInt("winIndex", currentWindowState);
-        outState.putLong("position", playbackPositionState);
 
     }
 
@@ -195,11 +176,6 @@ initializePlayer();
 
     private void releasePlayer() {
         if (player != null) {
-
-            playbackPosition = player.getCurrentPosition();
-            currentWindow = player.getCurrentWindowIndex();
-            playbackPositionState=playbackPosition;
-            currentWindowState=currentWindow;
             playWhenReady = player.getPlayWhenReady();
             player.release();
             player = null;

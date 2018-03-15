@@ -51,7 +51,6 @@ public class DataLoader {
             try {
 
                 new AsyncTask<URL, Integer, String>() {
-                    public static final long DELAY_MILLIS =3000 ;
                     boolean isConnected;
 
                     private ArrayList<Ingredient> makeIngredientsList(JSONArray ingredientsArray) throws JSONException {
@@ -121,18 +120,8 @@ public class DataLoader {
 
                         }
                         setupRecyclerView();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (callback != null) {
-                                    callback.onDone((ArrayList<Recipe>)DataLoader.ITEMS);
-                                    if (ir != null) {
-                                        ir.setIdleState(true);
-                                    }
-                                }
-                            }
-                        }, DELAY_MILLIS);
+                        ir.setIdleState(true);
+
                     }
 
 

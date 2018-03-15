@@ -1,6 +1,7 @@
 package android.example.com.bakingapp;
 
 
+import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,6 +13,8 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,17 +32,18 @@ public class ShowFirstItem {
 
     @Rule
     public ActivityTestRule<RecipeListActivity> mActivityTestRule = new ActivityTestRule<>(RecipeListActivity.class);
+    @Before
+    public void setIdeling()
+    {
+        IdlingRegistry.getInstance().register(mActivityTestRule.getActivity().getIdlingResource());
+    }
 
     @Test
     public void showFirstItem() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.content), withText("Nutella Pie"),
@@ -52,7 +56,11 @@ public class ShowFirstItem {
         textView.check(matches(withText("Nutella Pie")));
 
     }
-
+@After
+public void unIdeling()
+{
+    IdlingRegistry.getInstance().unregister(mActivityTestRule.getActivity().getIdlingResource());
+}
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 

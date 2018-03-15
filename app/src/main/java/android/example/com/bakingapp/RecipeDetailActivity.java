@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.example.com.bakingapp.Concepts.DataLoader;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -60,21 +61,27 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+        if(savedInstanceState==null) {
         Timber.d("send recipe to fragment detail "+ getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
 
-            Bundle arguments = new Bundle();
-            arguments.putString(RecipeDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
-            RecipeDetailFragment fragment = new RecipeDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.recipe_detail_container, fragment)
-                    .commit();
+    Bundle arguments = new Bundle();
+    arguments.putString(RecipeDetailFragment.ARG_ITEM_ID,
+            getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
+    RecipeDetailFragment fragment = new RecipeDetailFragment();
+    fragment.setArguments(arguments);
+    getSupportFragmentManager().beginTransaction()
+            .replace(R.id.recipe_detail_container, fragment)
+            .commit();
 
-
+}
 
         }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

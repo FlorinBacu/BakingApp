@@ -119,12 +119,28 @@ Timber.d("OncreateFragment");
 
                     }
                 });
+            Log.i("TAG","restore");
+            if (savedInstanceState != null) {
+                Log.i("TAG","restore inside");
+                currentWindow = savedInstanceState.getInt("winIndex");
+                playbackPosition = savedInstanceState.getLong("position",0);
+
+            }
 
 
         }
 
 
         return inflated;
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.i("TAG","save");
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("winIndex", currentWindow);
+        outState.putLong("position", playbackPosition);
 
     }
     @Override

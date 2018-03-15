@@ -58,7 +58,7 @@ public class StepActivityFragment extends Fragment{
 
     private  long playbackPosition;
     private  int currentWindow;
-    private boolean playWhenReady = false;
+    private boolean playWhenReady = true;
     private int currentWindowState;
     private long playbackPositionState;
 
@@ -178,13 +178,14 @@ Timber.d("OncreateFragment");
 
     private void initializePlayer() {
         if (player == null) {
-            player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getActivity()),
+            player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(this.getActivity()),
                     new DefaultTrackSelector(), new DefaultLoadControl());
             playerView.setPlayer(player);
             player.setPlayWhenReady(playWhenReady);
-            MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
-            player.prepare(mediaSource, true, false);
+            player.seekTo(currentWindow, playbackPosition);
         }
+        MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
+        player.prepare(mediaSource, false, false);
 
     }
 
@@ -192,6 +193,8 @@ Timber.d("OncreateFragment");
 
     private void releasePlayer() {
         if (player != null) {
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
             playWhenReady = player.getPlayWhenReady();
             player.release();
             player = null;

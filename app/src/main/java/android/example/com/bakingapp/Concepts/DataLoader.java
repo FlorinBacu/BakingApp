@@ -45,10 +45,11 @@ public class DataLoader {
     public static final Map<String, Recipe> ITEM_MAP = new HashMap<String, Recipe>();
 
     private static  int COUNT;
-
-    public static void load(final Context context, final DelayerCallback callback,final IdleResource ir) throws InterruptedException {
-        if (!DataIsLoaded) {
+// ensure that only on thread of the time access this function
+    public static synchronized void load(final Context context, final DelayerCallback callback,final IdleResource ir) throws InterruptedException {
+        if (!DataIsLoaded) {//flag for showing that data is loaded
             try {
+
                 new AsyncTask<URL, Integer, String>() {
                     public static final long DELAY_MILLIS =3000 ;
                     boolean isConnected;

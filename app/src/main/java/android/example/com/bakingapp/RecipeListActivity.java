@@ -110,12 +110,20 @@ DataLoader.addRecipe(recipe);
         RecipeListActivity.context=this;
 
 if(!onTestData) {
-    try {
-        getIdlingResource();
-        DataLoader.load(this,this,mIdlingResource);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    }
+    getIdlingResource();
+    Runnable r=new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                DataLoader.load(RecipeListActivity.context,RecipeListActivity.context,mIdlingResource);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    new Thread(r).start();//Thread because DataLoader.load is syncronized;
+
 }
 else
 {

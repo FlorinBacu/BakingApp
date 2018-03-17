@@ -151,41 +151,7 @@ else
 
     @Override
     public void onDone(ArrayList<DataLoader.Recipe> recipes) {
-        //TextView testing =(TextView)findViewById(R.id.textView);
-        //testing.setText("Changed");
-/*
-        // Create a {@link TeaAdapter}, whose data source is a list of {@link Tea}s.
-        // The adapter know how to create grid items for each item in the list.
-        RecyclerView gridview = (RecyclerView) findViewById(R.id.recipe_list);
-        DetailAdapter adapter = new DetailAdapter(this, R.layout.recipe_detail, (ArrayList< DataLoader.Recipe>)DataLoader.ITEMS);
-        gridview.setAdapter(adapter);
-
-        // Set a click listener on that View
-        RecyclerView.OnItemTouchListener oitl=new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-                DataLoader.Recipe item = (DataLoader.Recipe)rv. .getItemAtPosition(position);
-                // Set the intent to open the {@link OrderActivity}
-                mRecipeIntent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
-                String recipeName = item.name;
-                mRecipeIntent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, String.valueOf(item.id));
-                startActivity(mRecipeIntent);
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        };
-        gridview.addOnItemTouchListener(oitl);
-
-              */
-
+ 
 
     }
 

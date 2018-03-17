@@ -60,6 +60,7 @@ public class StepActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_step);
+        playbackPosition=C.TIME_UNSET;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
@@ -153,7 +154,7 @@ context=this;
         if (savedInstanceState != null) {
             Log.i("TAG","restore inside");
             currentWindow = savedInstanceState.getInt("winIndex");
-            playbackPosition = savedInstanceState.getLong("position",0);
+            playbackPosition = savedInstanceState.getLong("position",C.TIME_UNSET);
 
         }
     }

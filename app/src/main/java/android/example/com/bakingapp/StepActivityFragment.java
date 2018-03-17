@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -77,6 +78,7 @@ public class StepActivityFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        playbackPosition= C.TIME_UNSET;
 Timber.d("OncreateFragment");
         View inflated = inflater.inflate(R.layout.fragment_step, container, false);
 
@@ -136,7 +138,7 @@ Timber.d("OncreateFragment");
         if (savedInstanceState != null) {
             Log.i("TAG","restore inside");
             currentWindow = savedInstanceState.getInt("winIndex");
-            playbackPosition = savedInstanceState.getLong("position",0);
+            playbackPosition = savedInstanceState.getLong("position",C.TIME_UNSET);
 
         }
     }
@@ -190,8 +192,9 @@ Timber.d("OncreateFragment");
             playerView.setPlayer(player);
             MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
             player.prepare(mediaSource, false, false);
-            player.setPlayWhenReady(playWhenReady);
+
             player.seekTo(currentWindow, playbackPosition);
+            player.setPlayWhenReady(playWhenReady);
         }
 
 

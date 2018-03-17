@@ -54,6 +54,8 @@ public class StepActivity extends AppCompatActivity {
     private String videoURL;
     private Button nextButton;
     private Context context;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,13 +100,7 @@ context=this;
                 }
             });
 
-            Log.i("TAG","restore");
-            if (savedInstanceState != null) {
-                Log.i("TAG","restore inside");
-                currentWindow = savedInstanceState.getInt("winIndex");
-                playbackPosition = savedInstanceState.getLong("position",0);
 
-            }
         }
 
 
@@ -150,16 +146,30 @@ context=this;
         }
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i("TAG","restore");
+        if (savedInstanceState != null) {
+            Log.i("TAG","restore inside");
+            currentWindow = savedInstanceState.getInt("winIndex");
+            playbackPosition = savedInstanceState.getLong("position",0);
+
+        }
+    }
+
     private void initializePlayer() {
         if (player == null) {
             player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(this),
                     new DefaultTrackSelector(), new DefaultLoadControl());
+            MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
+            player.prepare(mediaSource, false, false);
             playerView.setPlayer(player);
             player.setPlayWhenReady(playWhenReady);
             player.seekTo(currentWindow, playbackPosition);
+
         }
-        MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
-        player.prepare(mediaSource, false, false);
+
     }
 
     @Override
@@ -169,6 +179,7 @@ context=this;
 
         outState.putInt("winIndex", currentWindow);
         outState.putLong("position", playbackPosition);
+
 
     }
 

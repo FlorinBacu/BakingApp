@@ -119,13 +119,7 @@ Timber.d("OncreateFragment");
 
                     }
                 });
-            Log.i("TAG","restore");
-            if (savedInstanceState != null) {
-                Log.i("TAG","restore inside");
-                currentWindow = savedInstanceState.getInt("winIndex");
-                playbackPosition = savedInstanceState.getLong("position",0);
 
-            }
 
 
         }
@@ -134,6 +128,19 @@ Timber.d("OncreateFragment");
         return inflated;
 
     }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.i("TAG","restore");
+        if (savedInstanceState != null) {
+            Log.i("TAG","restore inside");
+            currentWindow = savedInstanceState.getInt("winIndex");
+            playbackPosition = savedInstanceState.getLong("position",0);
+
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Log.i("TAG","save");
@@ -181,11 +188,13 @@ Timber.d("OncreateFragment");
             player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(this.getActivity()),
                     new DefaultTrackSelector(), new DefaultLoadControl());
             playerView.setPlayer(player);
+            MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
+            player.prepare(mediaSource, false, false);
             player.setPlayWhenReady(playWhenReady);
             player.seekTo(currentWindow, playbackPosition);
         }
-        MediaSource mediaSource = buildMediaSource(Uri.parse(videoURL));
-        player.prepare(mediaSource, false, false);
+
+
 
     }
 
